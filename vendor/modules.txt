@@ -1,0 +1,29 @@
+# github.com/akavel/rsrc v0.9.0
+## explicit
+github.com/akavel/rsrc
+github.com/akavel/rsrc/binutil
+github.com/akavel/rsrc/coff
+github.com/akavel/rsrc/ico
+github.com/akavel/rsrc/internal
+github.com/akavel/rsrc/rsrc
+# github.com/lxn/walk v0.0.0-20191128110447-55ccb3a9f5c1
+## explicit
+github.com/lxn/walk
+github.com/lxn/walk/declarative
+# github.com/lxn/win v0.0.0-20191128105842-2da648fda5b4
+## explicit
+github.com/lxn/win
+# github.com/timshannon/bolthold v0.0.0-20200603170222-fa67e4fbfbc3
+## explicit
+github.com/timshannon/bolthold
+# go.etcd.io/bbolt v1.3.5
+## explicit
+go.etcd.io/bbolt
+# golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae
+## explicit
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/unix
+golang.org/x/sys/windows
+# gopkg.in/Knetic/govaluate.v3 v3.0.0
+## explicit
+gopkg.in/Knetic/govaluate.v3
