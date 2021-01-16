@@ -101,6 +101,10 @@ func CastBuff(eqc *everquest.Client, selfName, who string, buff string) error {
 func main() {
 	runtime.GOMAXPROCS(16)
 	cfg := &storage.BoltholdBackedConfig{}
+	const advertKey = "advert"
+	if !cfg.HasConfItem(advertKey) {
+		cfg.SetConfItem(advertKey, "I'm a buff bot.  Send me a /TELL if you want any of:")
+	}
 	ui.RunMainWindow(cfg, []ui.ConfigurationLine{
 		{"spell1", "Spell gem#1 keyword (leave empty if no buff loaded in this spell gem)"},
 		{"spell2", "Spell gem#2 keyword"},
@@ -111,7 +115,7 @@ func main() {
 		{"spell7", "Spell gem#7 keyword"},
 		{"spell8", "Spell gem#8 keyword"},
 		{"spell9", "Spell gem#9 keyword"},
-		{"periodNum", "Periodic spell cast gem # (e.g. Canni for shaman), or blank"},
+		{advertKey, "Text to /ooc periodically, or blank for no advertisement"},
 	}, func(ctx context.Context, config storage.ControllerConfig) {
 		buffs = []BuffEntry{}
 		for i := 1; i <= 9; i++ {
@@ -123,12 +127,6 @@ func main() {
 					Index: i,
 				})
 			}
-		}
-
-		canniNumText := cfg.GetConfItem("periodNum")
-		canniNum, err := strconv.Atoi(canniNumText)
-		if err != nil {
-			canniNum = -1
 		}
 
 		eqc, err := everquest.NewEqClient(ctx, config)
@@ -201,33 +199,20 @@ func main() {
 		zoneMsgTap, zmdoneFunc := eqc.TapLog()
 		defer zmdoneFunc()
 		announce := time.After(10*time.Minute)
-		canni := time.After(20*time.Second)
 		for {
 			select {
 			case <-eqc.Context.Done():
 				return
-			case msg := <- zoneMsgTap:
+			case msg := <-zoneMsgTap:
 				if strings.HasPrefix(msg.Message, "LOADING") {
 					return
 				}
 			case <-announce:
-				eqc.Send("/ooc I'm a buff bot.  Send me a /TELL if you want any of: " + allBuffs())
-				announce = time.After(10*time.Minute)
-			case <-canni:
-				if canniNum > 0 {
-					func() {
-						eqi, err := eqc.GrabInput()
-						if err != nil {
-							return
-						}
-						defer eqi.Release()
-						eqi.Send("/cast " + strconv.Itoa(canniNum))
-						<-time.After(8 * time.Second)
-					}()
+				if cfg.GetConfItem(advertKey) != "" {
+					eqc.Send("/ooc " + cfg.GetConfItem(advertKey) + " " + allBuffs())
 				}
-				canni = time.After(20*time.Second)
+				announce = time.After(10 * time.Minute)
 			}
 		}
 	})
-
 }

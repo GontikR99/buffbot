@@ -61,6 +61,13 @@ func (bhc *BoltholdBackedConfig) GetConfItem(name string) string {
 	}
 }
 
+func (bhc *BoltholdBackedConfig) HasConfItem(name string) bool {
+	value := &bhConfigEntry{}
+	err := database.Get(varConfKey+name, value)
+	return err==nil
+}
+
+
 func (bhc *BoltholdBackedConfig) SetConfItem(name, value string) {
 	err := database.Upsert(varConfKey+name, &bhConfigEntry{[]byte(value)})
 	if err != nil {

@@ -9,6 +9,7 @@ type ControllerConfig interface {
 	SetSelectedCharacter(string)
 
 	GetConfItem(string) string
+	HasConfItem(string) bool
 	SetConfItem(name, value string)
 }
 
